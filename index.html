@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" class="dark"> <!-- Starts in dark mode by default -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Showcase Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-primary': '#4f46e5',
+                        'brand-secondary': '#7c3aed',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for a polished look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #4a5568; border-radius: 20px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: #718096; }
+
+        /* Smooth transition for theme changes */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Progress circle animation */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1s cubic-bezier(0.35, 0, 0.25, 1);
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Modal transitions */
+        .modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-leave-to {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-backdrop {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased">
+
+    <div id="app" class="container mx-auto p-4 md:p-8">
+
+        <!-- Header Section -->
+        <header class="flex flex-col sm:flex-row justify-between items-center mb-8 md:mb-12">
+            <div class="text-center sm:text-left mb-4 sm:mb-0">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Rithik Raja R</h1>
+                <p class="text-md text-brand-primary dark:text-violet-400 font-medium">Naan Mudhalvan Digital Portfolio</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <!-- Sun Icon -->
+                    <svg id="theme-toggle-light-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <!-- Moon Icon -->
+                    <svg id="theme-toggle-dark-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Skills Grid -->
+        <main id="skills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+            <!-- Skill cards will be dynamically inserted here -->
+        </main>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modal-container">
+        <!-- Modals will be dynamically inserted here -->
+    </div>
+
+
+    <script>
+        const skillsData = [
+            {
+                id: 'javascript',
+                name: 'JavaScript',
+                level: 90,
+                color: 'yellow',
+                certifications: [{ name: 'FreeCodeCamp JS Certificate', link: '#' }],
+                badges: [{ name: 'HackerRank JS (Advanced)', link: '#' }],
+                projects: [
+                    { name: 'Interactive E-commerce Frontend', description: 'Built a responsive and dynamic shopping cart experience using vanilla JS.', link: '#' },
+                    { name: 'Data Visualization Dashboard', description: 'Used Chart.js to create an interactive dashboard for visualizing sales data.', link: '#' }
+                ]
+            },
+            {
+                id: 'react',
+                name: 'React',
+                level: 85,
+                color: 'blue',
+                certifications: [{ name: 'Coursera React Basics', link: '#' }],
+                badges: [],
+                projects: [
+                    { name: 'Task Management App', description: 'A single-page application built with React, using components and state management.', link: '#' },
+                    { name: 'Gamified Portfolio', description: 'The very portfolio you saw before, built using React and functional components.', link: '#' }
+                ]
+            },
+            {
+                id: 'python',
+                name: 'Python',
+                level: 75,
+                color: 'green',
+                certifications: [],
+                badges: [{ name: 'Codecademy Python Skill Path', link: '#' }],
+                projects: [
+                    { name: 'Web Scraper Bot', description: 'A script to automate data collection from various websites using BeautifulSoup.', link: '#' },
+                    { name: 'Simple API with Flask', description: 'Developed a RESTful API for a small application using the Flask framework.', link: '#' }
+                ]
+            },
+            {
+                id: 'htmlcss',
+                name: 'HTML & CSS',
+                level: 95,
+                color: 'red',
+                certifications: [],
+                badges: [],
+                projects: [
+                    { name: 'Responsive Landing Pages', description: 'Created several pixel-perfect and mobile-first landing pages from design mockups.', link: '#' },
+                    { name: 'CSS Animation Showcase', description: 'A collection of pure CSS animations and effects to demonstrate styling capabilities.', link: '#' }
+                ]
+            },
+            {
+                id: 'tailwind',
+                name: 'Tailwind CSS',
+                level: 90,
+                color: 'teal',
+                certifications: [],
+                badges: [{ name: 'Official Tailwind Docs Challenge', link: '#' }],
+                projects: [
+                     { name: 'This Dashboard Portfolio', description: 'This entire dashboard was styled using Tailwind CSS for a professional and responsive design.', link: '#' }
+                ]
+            },
+            {
+                id: 'figma',
+                name: 'Figma',
+                level: 80,
+                color: 'purple',
+                certifications: [],
+                badges: [],
+                projects: [
+                    { name: 'Mobile App UI/UX Design', description: 'Designed a complete user interface and prototype for a mobile application in Figma.', link: '#' },
+                    { name: 'Website Design System', description: 'Created a reusable component library and style guide for a web project.', link: '#' }
+                ]
+            },
+        ];
+
+        const colorMap = {
+            yellow: { text: 'text-yellow-500', bg: 'bg-yellow-500', stroke: 'stroke-yellow-500', ring: 'ring-yellow-500' },
+            blue: { text: 'text-blue-500', bg: 'bg-blue-500', stroke: 'stroke-blue-500', ring: 'ring-blue-500' },
+            green: { text: 'text-green-500', bg: 'bg-green-500', stroke: 'stroke-green-500', ring: 'ring-green-500' },
+            red: { text: 'text-red-500', bg: 'bg-red-500', stroke: 'stroke-red-500', ring: 'ring-red-500' },
+            teal: { text: 'text-teal-500', bg: 'bg-teal-500', stroke: 'stroke-teal-500', ring: 'ring-teal-500' },
+            purple: { text: 'text-purple-500', bg: 'bg-purple-500', stroke: 'stroke-purple-500', ring: 'ring-purple-500' }
+        };
+
+        const skillsGrid = document.getElementById('skills-grid');
+        const modalContainer = document.getElementById('modal-container');
+
+        // --- Render Skills and Modals ---
+        function renderContent() {
+            let skillsHTML = '';
+            let modalsHTML = '';
+
+            skillsData.forEach(skill => {
+                const colors = colorMap[skill.color];
+                const radius = 54;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (skill.level / 100) * circumference;
+
+                skillsHTML += `
+                    <div class="skill-card bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-xl dark:hover:shadow-2xl dark:shadow-gray-950/50 transform hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold ${colors.text}">${skill.name}</h3>
+                            <div class="relative w-28 h-28">
+                                <svg class="w-full h-full" viewBox="0 0 120 120">
+                                    <circle class="stroke-current text-gray-200 dark:text-gray-700" stroke-width="8" fill="transparent" r="${radius}" cx="60" cy="60" />
+                                    <circle class="progress-ring__circle ${colors.stroke}"
+                                        stroke-width="8"
+                                        stroke-linecap="round"
+                                        fill="transparent"
+                                        r="${radius}"
+                                        cx="60"
+                                        cy="60"
+                                        style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference};"
+                                        data-offset="${offset}"
+                                    />
+                                </svg>
+                                <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-gray-700 dark:text-gray-300">${skill.level}%</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 mt-4">
+                            ${skill.certifications.length > 0 ? skill.certifications.map(c => `<a href="${c.link}" target="_blank" class="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-primary dark:hover:text-violet-400 transition-colors">
+                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                ${c.name}
+                            </a>`).join('') : '<div class="h-6"></div>'}
+                             ${skill.badges.length > 0 ? skill.badges.map(b => `<a href="${b.link}" target="_blank" class="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-primary dark:hover:text-violet-400 transition-colors">
+                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                ${b.name}
+                            </a>`).join('') : '<div class="h-6"></div>'}
+                        </div>
+                        <div class="mt-6">
+                            <button data-modal-target="${skill.id}-modal" class="w-full font-semibold py-2 px-4 rounded-lg text-white ${colors.bg} hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${colors.ring} transition-all">
+                                View Projects
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                modalsHTML += `
+                    <div id="${skill.id}-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4 modal-enter">
+                        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-60"></div>
+                        <div class="relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 transform transition-transform duration-300">
+                             <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-2xl font-bold ${colors.text}">${skill.name} Projects</h2>
+                                <button class="close-modal-btn p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                            <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                                ${skill.projects.map(p => `
+                                    <div class="p-4 rounded-lg bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
+                                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white">${p.name}</h3>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm mt-1 mb-3">${p.description}</p>
+                                        <a href="${p.link}" target="_blank" class="font-semibold text-brand-primary dark:text-violet-400 hover:underline">View Project &rarr;</a>
+                                    </div>
+                                `).join('')}
+                                ${skill.projects.length === 0 ? `<p class="text-gray-500 dark:text-gray-400">No projects to display for this skill yet.</p>`: ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            skillsGrid.innerHTML = skillsHTML;
+            modalContainer.innerHTML = modalsHTML;
+        }
+
+        // --- Theme Toggle Logic ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        
+        // Check for saved theme in localStorage
+        if (localStorage.getItem('color-theme') === 'light' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+            document.documentElement.classList.remove('dark');
+            lightIcon.classList.remove('hidden');
+            darkIcon.classList.add('hidden');
+        } else {
+            document.documentElement.classList.add('dark');
+            darkIcon.classList.remove('hidden');
+            lightIcon.classList.add('hidden');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
+            lightIcon.classList.toggle('hidden', isDark);
+            darkIcon.classList.toggle('hidden', !isDark);
+        });
+
+        // --- Progress Circle Animation ---
+        function animateProgressCircles() {
+            const circles = document.querySelectorAll('.progress-ring__circle');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const circle = entry.target;
+                        const offset = circle.getAttribute('data-offset');
+                        circle.style.strokeDashoffset = offset;
+                        observer.unobserve(circle); // Animate only once
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            circles.forEach(circle => {
+                observer.observe(circle);
+            });
+        }
+
+        // --- Modal Logic ---
+        function setupModals() {
+            document.addEventListener('click', (e) => {
+                // Open Modal
+                const openButton = e.target.closest('[data-modal-target]');
+                if (openButton) {
+                    const modalId = openButton.dataset.modalTarget;
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('hidden', 'modal-leave-to');
+                        modal.classList.add('flex');
+                        document.body.style.overflow = 'hidden';
+                    }
+                }
+
+                // Close Modal
+                const closeButton = e.target.closest('.close-modal-btn');
+                const backdrop = e.target.closest('.modal-backdrop');
+                if (closeButton || backdrop) {
+                    const modal = e.target.closest('.modal');
+                    modal.classList.add('modal-leave-to');
+                    document.body.style.overflow = '';
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                    }, 300);
+                }
+            });
+
+             // Close modal with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const openModal = document.querySelector('.modal:not(.hidden)');
+                    if (openModal) {
+                        openModal.querySelector('.close-modal-btn').click();
+                    }
+                }
+            });
+        }
+        
+        // --- Initialize App ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderContent();
+            animateProgressCircles();
+            setupModals();
+        });
+    </script>
+
+</body>
+</html>
+
+
